@@ -49,6 +49,7 @@ function start() {
                 "View All Departments",
                 "Add Department",
                 "Remove Department",
+                "View Department Budget",
                 "EXIT"
             ]
         })
@@ -105,6 +106,9 @@ function start() {
                 case "Remove Department":
                     update.removeDepartment(connection, start);
                     break;
+                case "View Department Budget":
+                        update.getBudget(connection, start);
+                        break;
 
                 case "EXIT":
                     connection.end();

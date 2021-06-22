@@ -210,10 +210,37 @@ function removeDepartment (connection, cb) {
                 let query = 'DELETE FROM department WHERE name = ?;'
                 connection.query(query, answer.removeDept, function (err, res) {
                     if (err) throw err;
-                    console.log("Department successfully deleted");
+                    console.log("Department successfully removed");
                     cb();
                 });
             });
+    });
+}
+
+// TOTAL DEPARTMENT'S BUDGET
+function getBudget (connection, cb) {
+    connection.query("SELECT * FROM department", function (err, departmentData) {
+        if (err) throw err;
+        inquirer
+            .prompt([
+                {
+                    name: "department_id",
+                    type: "list",
+                    message: "Which department's budget would you like to view?",
+                    choices: departmentData.map(department => ({name:department.name,value:department.id})),
+                }
+            ])
+            .then(function (answer) {
+            let query = "SELECT * FROM department";
+            connection.query(query, + ' AND department.id =  ?', answer.department, function (err, finalData) {
+            if (err) throw err;
+            finalData.forEach((employee) => {
+                budget += employee.Salary
+            })
+            console.log("The budget for this department is $" + budget)
+            cb();
+        });
+    });
     });
 }
 
@@ -222,5 +249,8 @@ module.exports = {
     updateRole: updateRole,
     updateManager: updateManager,
     removeEmployee: removeEmployee,
+    removeRole: removeRole,
+    removeDepartment: removeDepartment,
+    getBudget: getBudget
 
 }
