@@ -16,6 +16,14 @@ const connection = mysql.createConnection({
     database: 'companyDB',
   });
 
+//QUERIES
+// View
+const view = require('./queries/view.js');
+// Add
+const add = require('./queries/add.js');
+// Update
+const update = require('./queries/update.js');
+
   //ON START
 
  connection.connect((err) => {
@@ -27,6 +35,6 @@ const connection = mysql.createConnection({
 
  };
 
- 
+
 
 
