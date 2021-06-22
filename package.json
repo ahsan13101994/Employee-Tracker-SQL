@@ -10,6 +10,7 @@
   "author": "Syed Ahsan Rizvi",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^10.0.0",
     "inquirer": "^8.1.1"
   },
   "devDependencies": {

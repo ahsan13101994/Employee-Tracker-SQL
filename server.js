@@ -1,14 +1,15 @@
 // DEPENDENCIES
 const mysql = require('mysql');
 const inquirer = require('inquirer'); 
-
+require('dotenv').config();
 //MYSQL 
 
 const connection = mysql.createConnection({
     host: 'localhost',
     port: 3306,
     user: 'root',
-    password: 'Kalsoom12@',
+    password: process.env.DB_PASS,
+    // password:'Elephant12@',
     database: 'companyDB',
 });
 
