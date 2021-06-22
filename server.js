@@ -47,7 +47,7 @@ const update = require('./queries/update.js');
                 "Remove Employee",
                 "View All Roles",
                 "Add Role",
-                "Remove Role",
+                "Remove Role", 
                 "View All Departments",
                 "Add Department",
                 "Remove Department",
@@ -59,17 +59,29 @@ const update = require('./queries/update.js');
                 await viewAllEmployees();
                 break;
             case "View All Employees by Department":
-                await viewByDepartment();
+                await viewDepartments();
                 break;
             case "View All Employees by Manager":
-                await viewByManager();
+                await viewManagers();
                 break;
-            case "Add Data":
-                await addOptions();
+            case "Add Department":
+                    await addDepartment();
+                    break;
+            case "Add Employee":
+                    await addEmployee();
+                    break;
+            case "Add Role":
+                await addRole();
                 break;
-            case "Remove Data":
-                await removeOptions();
+            case "Remove Role":
+                await removeRole();
                 break;
+            case "Remove Department":
+                    await removeDepartment();
+                    break;
+            case "Remove Employee":
+                        await removeEmployee();
+                        break;
             case "Update Employee Role":
                 await updateEmployeeRole();
                 break;
@@ -83,7 +95,7 @@ const update = require('./queries/update.js');
                 connection.end();
                 break;
             default:
-                console.log("Not a valid option")
+                console.log("Please select a valid option")
                 break;
         }
 
