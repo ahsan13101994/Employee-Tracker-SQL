@@ -218,7 +218,7 @@ function removeDepartment (connection, cb) {
 }
 
 // TOTAL DEPARTMENT'S BUDGET
-function getBudget (connection, cb) {
+function getBudget (connection) {
     connection.query("SELECT * FROM department", function (err, departmentData) {
         if (err) throw err;
         inquirer
@@ -232,15 +232,14 @@ function getBudget (connection, cb) {
             ])
             .then(function (answer) {
             let query = "SELECT * FROM department";
-            connection.query(query, + ' AND department.id =  ?', answer.department, function (err, finalData) {
+            connection.query(query, + ' AND department.id =  ?', answer.department_id, function (err, finalData) {
             if (err) throw err;
-            finalData.forEach((employee) => {
-                budget += employee.Salary
-            })
+                finalData.forEach((employee) => {
+                    budget += employee.Salary
+                });
             console.log("The budget for this department is $" + budget)
-            cb();
-        });
-    });
+            });
+         });
     });
 }
 
