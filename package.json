@@ -4,8 +4,8 @@
   "description": "Company Employee Management App",
   "main": "server.js",
   "scripts": {
-    "start": "node index",
-    "watch": "nodemon index"
+    "start": "node server",
+    "watch": "nodemon server"
   },
   "author": "Syed Ahsan Rizvi",
   "license": "ISC",
