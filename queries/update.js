@@ -164,4 +164,7 @@ function removeEmployee(connection, cb) {
 
 module.exports = {    
     updateRole: updateRole,
+    updateManager: updateManager,
+    removeEmployee: removeEmployee,
+    
 }
