@@ -4,7 +4,7 @@ function updateRole(connection, cb) {
 
     let newRole = {};
 
-    connection.query("SELECT * FROM employee", function (err, results) {
+    connection.query("SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department, e2.first_name AS manager FROM employee LEFT JOIN employee AS e2 ON e2.id = employee.manager_id JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id ORDER BY employee.id", function (err, results) {
         if (err) throw err;
         inquirer
             .prompt([
@@ -62,13 +62,13 @@ function updateRole(connection, cb) {
     })
 };
 
-// ADD FUNCTION UPDATE MANAGER
+// UPDATE MANAGER
 
-// ADD REMOVE EMPLOYEE FUNCTION
+// REMOVE EMPLOYEE
 
-// ADD REMOVE ROLE FUNCTION
+// REMOVE ROLE
 
-// ADD REMOVE DEPARTMENT FUNCTION
+// REMOVE DEPARTMENT
 
 
 module.exports = {    
