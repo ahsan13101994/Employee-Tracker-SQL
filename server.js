@@ -1,6 +1,7 @@
 // DEPENDENCIES
 const mysql = require('mysql');
-const inquirer = require('inquirer'); 
+const inquirer = require('inquirer');
+const util =require('util') 
 require('dotenv').config();
 //MYSQL 
 
@@ -19,6 +20,8 @@ const connection = mysql.createConnection({
      if (err) throw err;
      start();
  });
+
+ connection.query=util.promisify(connection.query)
 
  //  --------- START --------- //
 
@@ -63,9 +66,6 @@ const start = () => {
           case 'View Departments':
             viewDepartments();
             break;
-          case 'View Department Budget':
-            getBudget();
-            break;  
           case 'View Roles':
             viewRoles();
             break;
@@ -598,29 +598,4 @@ const updateRole = () => {
  }
 
 //// TOTAL DEPARTMENT'S BUDGET
-const getBudget = ()  => {
-    const budget = 0
-    connection.query('SELECT * FROM department', (err, departmentData) => {
-        if (err) throw err;
-        inquirer
-            .prompt([
-                {
-                    name: "department_id",
-                    type: "list",
-                    message: "Which department's budget would you like to view?",
-                    choices: departmentData.map(department => ({name:department.name,value:department.id})),
-                }
-            ])
-        .then((answer) => {
-        const query = 'SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department, e2.first_name AS manager FROM employee LEFT JOIN employee as e2 ON e2.id = employee.manager_id JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id WHERE department.name = ? ORDER BY employee.id';
-        connection.query(query, answer.department_id, (err, finalData) => {
-            if (err) throw err;
-            finalData.forEach((employee) => {
-                budget += employee.Salary
-            })
-            console.log("This is the department budget $" + budget);
-            start();
-        })
-    })
-})
-  }
+
