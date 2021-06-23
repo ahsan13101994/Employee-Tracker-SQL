@@ -53,11 +53,11 @@ const start = () => {
             viewAllEmployees();
             break;
           case 'View all employees by department':
-            viewAllEmployeesByDepartment();
+            viewEmployeeDept();
             break;
           case 'View all employees by manager':
-             viewAllEmployeesByManager();
-             break;
+            viewEmployeeMgr();
+            break;
           case 'View Departments':
             viewDepartments();
             break;
@@ -93,7 +93,17 @@ const start = () => {
         }
       });
   };
- 
+
+//View All Employees
+const viewAllEmployees = () => {  
+    const query = `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department, e2.first_name AS manager FROM employee LEFT JOIN employee as e2 ON e2.id = employee.manager_id JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id ORDER BY employee.id`;
+    connection.query(query, (err, res) => {
+        if (err) throw err;
+        console.table(res);
+        start();
+    })
+  }
+
 //View Roles
   const viewRoles = () => {
     const query = `SELECT * FROM role`;
@@ -113,7 +123,70 @@ const start = () => {
         start();
     })
   }
-  
+
+// View All Employees By Department
+const viewEmployeeDept = () => {
+    const query = `SELECT * FROM department`;
+    connection.query(query, (err, results) => {
+        if (err) throw err;
+        inquirer
+        .prompt([
+            {
+                name: "department",
+                type: "list",
+                choices: () => {
+                    const choiceArray = [];
+                    for (var i = 0; i < results.length; i++) {
+                        choiceArray.push(results[i].name);
+                    }
+                    return choiceArray;
+                },
+                message: "What department would you like to search by?"
+            }
+        ])
+        .then((answer) => { 
+            console.log(answer.department);
+            const query = 'SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department, e2.first_name AS manager FROM employee LEFT JOIN employee as e2 ON e2.id = employee.manager_id JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id WHERE department.name = ? ORDER BY employee.id';
+            connection.query(query, answer.department, (err, results) => {
+                if (err) throw err;
+                console.table(results);
+        start();
+    })
+})
+    })
+}
+
+//View Employees by Manager
+const viewEmployeeMgr = () => {
+    connection.query("SELECT DISTINCT e2.first_name, e2.last_name FROM employee LEFT JOIN employee AS e2 ON employee.manager_id = e2.id WHERE e2.first_name IS NOT NULL", function (err, results) {
+        if (err) throw err;
+        inquirer
+            .prompt([
+                {
+                    name: "manager",
+                    type: "list",
+                    choices: () => {
+                        const choiceArray = [];
+                        for (var i = 0; i < results.length; i++) {
+                            choiceArray.push(results[i].first_name);
+                        }
+                        return choiceArray;
+                    },
+                    message: "Which manager would you like to search by?"
+                }
+            ])
+            .then((answer) => { 
+                console.log(answer.manager);
+                const query = 'SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department, e2.first_name AS manager FROM employee LEFT JOIN employee AS e2 ON e2.id = employee.manager_id JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id WHERE e2.first_name = ? ORDER BY employee.id;'
+                connection.query(query, answer.manager, (err, res) => {
+                    if (err) throw err;
+                    console.table(res);
+                    start();
+                })
+            })
+    })
+}
+
 
 //// FUNCTION TO GET TOTAL BUDGET OF A DEPARTMENT
   const  getBudget = ()  => {
@@ -129,7 +202,7 @@ const start = () => {
                 }
             ])
         .then((answer) => {
-        let query = "SELECT department.id, role.salary AS Salary, department.name AS Department FROM companyDB.department";
+        let query = "SELECT department.id, department.name AS Department FROM companyDB.department";
         connection.query(query, answer.department_id, (err, finalData) => {
             if (err) throw err;
             finalData.forEach((employee) => {
