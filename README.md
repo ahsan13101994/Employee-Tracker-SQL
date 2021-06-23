@@ -5,9 +5,13 @@
 This MySQL application that allows users to add, view, update and delete the employee, company, and department data stored in a database.
 
 DEMO LINK: https://drive.google.com/file/d/11KtKJ7wyfymmpCIyQweKkKwlRmRnG9nW/view
-[Demo DB 1](./assets/demo1.PNG)
-[DEMO DB 2](./assets/demo2.PNG)
-[EMPLOYEE CMS DEMO](./assets/employee_cms.gif)
+
+![Demo DB 1](./assets/demo1.PNG)
+
+![DEMO DB 2](./assets/demo2.PNG)
+
+![EMPLOYEE CMS DEMO](./assets/employee_cms.gif)
+
 
 ## Useage
 
