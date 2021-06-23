@@ -525,7 +525,7 @@ const updateRole = () => {
                  }
              ])
              .then((answer) => {
-                 const query = 'DELETE FROM employee WHERE last_name = ?;'
+                 const query = 'DELETE FROM employee WHERE first_name = ?;'
                  connection.query(query, answer.removeEmployee, (err, res) => {
                      if (err) throw err;
                      console.log("Employee successfully removed");
