@@ -10,6 +10,7 @@ VALUES
 ("Operations");
 
 -- ROLES
+
 INSERT INTO role (title, salary, department_id)
 VALUES 
 ("Lead Software Project Manager", 180000.00, 1),
@@ -18,7 +19,6 @@ VALUES
 ("HR Associate", 90000.00, 4),
 ("Intern", 15000.00, 5),
 ("Marketing Representative", 60000.00, 2);
-
 
 -- EMPLOYEES
 
