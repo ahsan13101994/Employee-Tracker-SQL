@@ -113,7 +113,7 @@ const viewAllEmployees = () => {
         start();
     })
   }
-
+  
 //View Departments
   const viewDepartments = () => {
     const query = `SELECT * FROM department`;
@@ -187,9 +187,194 @@ const viewEmployeeMgr = () => {
     })
 }
 
+//ADD NEW EMPLOYEE
+const addEmployee = () => {
+    const newEmployee = {};
+    connection.query("SELECT * FROM role", function (err, results) {
+        if (err) throw err;
+        inquirer
+            .prompt([
+                {
+                    name: "first_name",
+                    type: "input",
+                    default: "Sohail",
+                    message: "What is the employee's first name?",
+                    validate: (answer) => {
+                        if (answer.length < 1) {
+                            return console.log("Please provide valid first name.");
+                        }
+                        return true;
+                    }
+                },
+                {
+                    name: "last_name",
+                    type: "input",
+                    default: "Shah",
+                    message: "What is the employee's last name?",
+                    validate: (answer) => {
+                        if (answer.length < 1) {
+                            return console.log("Please provide valid last name.");
+                        }
+                        return true;
+                    }
+                },
+                {
+                    name: "role",
+                    type: "list",
+                    choices: () => {
+                        const choiceArray = [];
+                        for (var i = 0; i < results.length; i++) {
+                            choiceArray.push(results[i].title);
+                        }
+                        return choiceArray;
+                    },
+                    message: "What is the employee's role?"
+                }
+            ])
+            .then((answer) => {
 
-//// FUNCTION TO GET TOTAL BUDGET OF A DEPARTMENT
-  const  getBudget = ()  => {
+                newEmployee.first_name = answer.first_name;
+                newEmployee.last_name = answer.last_name;
+
+                connection.query("SELECT * FROM role WHERE title = ?", answer.role, (err, results) => {
+                    if (err) throw err;
+
+                    newEmployee.role_id = results[0].id;
+                    
+                connection.query("SELECT * FROM employee;", (err, results) => {
+                        if (err) throw err;
+                        inquirer
+                            .prompt([
+                                {
+                                    name: "manager_name",
+                                    type: "list",
+                                    choices: () => {
+                                        const choiceArray = [];
+                                        for (var i = 0; i < results.length; i++) {
+                                            choiceArray.push(results[i].first_name);
+                                        }
+                                        return choiceArray;
+                                    },
+                                    message: "Who is the employee's manager?"
+                                }
+                            ])
+                            .then((answer) => {
+                                connection.query("SELECT id FROM employee WHERE first_name = ?", answer.manager_name, (err, results) => {
+                                    if (err) throw err;
+                                    newEmployee.manager_id = results[0].id;
+                                    console.log("Adding new employee: ", newEmployee);
+
+                                    connection.query('INSERT INTO employee SET ?', newEmployee, (err, results) => {
+                                        if (err) throw err;
+                                        console.log("Employee successfully added.");
+                                        start();
+                                    })
+                                })
+                            })
+                    })
+                })
+            })
+    })
+}
+
+//ADD NEW ROLE
+const addRole = () => {
+    const newRole = {};
+    connection.query("SELECT * FROM department", (err, results) => {
+        inquirer
+            .prompt([
+                {
+                    name: "role_title",
+                    type: "input",
+                    default: "Software Engineer",
+                    message: "What is the role you would like to add?",
+                    validate:(answer) => {
+                        if (answer.length < 1) {
+                            return console.log("Please select a valid role.");
+                        }
+                        return true;
+                    }
+                },
+                {
+                    name: "salary",
+                    type: "input",
+                    default: "810000",
+                    message: "What is the salary of the role?",
+                    validate: (answer) => {
+                        if (answer.length < 1) {
+                            return console.log("Please select a valid salary.");
+                        }
+                        return true;
+                    }
+                },
+                {
+                    name: "department_name",
+                    type: "list",
+                    choices: () => {
+                        const choiceArray = [];
+                        for (var i = 0; i < results.length; i++) {
+                            choiceArray.push(results[i].name);
+                        }
+                        return choiceArray;
+                    },
+                    message: "What is the role's department?"
+                }
+            ])
+            .then((answer) => {
+
+                newRole.title = answer.role_title;
+                newRole.salary = answer.salary;
+
+                // Translate manager_name to id
+                connection.query("SELECT id FROM department WHERE name = ?", answer.department_name, (err, results) =>
+                {
+                    if (err) throw err;
+                    newRole.department_id = results[0].id;
+                    console.log("Adding new role: ", newRole);
+
+                    connection.query('INSERT INTO role SET ?', newRole, (err, results) => {
+                        if (err) throw err;
+                        console.log("Role successfully added.");
+                        start();
+                    })
+                })
+
+            })
+    })
+}
+
+// ADD NEW DEPARTMENT
+const addDepartment = () => {
+    inquirer
+        .prompt([
+            {
+                name: "department_name",
+                type: "input",
+                default: "Information Technology",
+                message: "What is the department you would like to add?",
+                validate:(answer) => {
+                    if (answer.length < 1) {
+                        return console.log("Please provide a valid departmant name.");
+                    }
+                    return true;
+                }
+            }
+        ])
+        .then((answer) => {
+                connection.query('INSERT INTO department (name) VALUES (?)', answer.department_name, (err, results) => {
+                    if (err) throw err;
+                    console.log("Department successfully added.");
+                    start();
+                })
+
+        })
+
+}
+
+
+//// TOTAL DEPARTMENT'S BUDGET
+const getBudget = ()  => {
+    let budget = 0
     connection.query('SELECT * FROM department', (err, departmentData) => {
         if (err) throw err;
         inquirer
@@ -202,7 +387,7 @@ const viewEmployeeMgr = () => {
                 }
             ])
         .then((answer) => {
-        let query = "SELECT department.id, department.name AS Department FROM companyDB.department";
+        const query = "SELECT department.id, department.name AS Department FROM companyDB.department";
         connection.query(query, answer.department_id, (err, finalData) => {
             if (err) throw err;
             finalData.forEach((employee) => {
