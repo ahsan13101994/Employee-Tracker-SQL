@@ -58,10 +58,10 @@ const start = () => {
           case 'View all employees by manager':
              viewAllEmployeesByManager();
              break;
-          case 'View Dapartments':
+          case 'View Departments':
             viewDepartments();
             break;
-         case 'View Department Budget':
+          case 'View Department Budget':
             getBudget();
             break;  
           case 'View Roles':
@@ -106,7 +106,7 @@ const start = () => {
 
 //View Departments
   const viewDepartments = () => {
-    const query = `SELECT department.id AS "Department ID", department.name AS Department FROM companyDB.department`;
+    const query = `SELECT * FROM department`;
     connection.query(query, (err, res) => {
         if (err) throw err;
         console.table(res);
